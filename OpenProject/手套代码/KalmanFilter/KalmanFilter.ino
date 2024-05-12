@@ -26,11 +26,10 @@ acc[0]=mpu6050.getAccX();
 acc_estimated[0]=KalmanFilter_acc.updateEstimate(mpu6050.getAccX());
 angle[0]=mpu6050.getAngleX();
 angle_estimated[0]=KalmanFilter_angle.updateEstimate(mpu6050.getAngleX());
-Serial.print(acc[0]);
-Serial.print(",");
-Serial.println(acc_estimated[0]);
-//Serial.print(angle[0]);
+//Serial.print(acc[0]);
 //Serial.print(",");
-//Serial.println(angle_estimated[0]);
-
+//Serial.println(acc_estimated[0]);
+Serial.print(angle[0]);
+Serial.print(",");
+Serial.println(angle_estimated[0]);
   }

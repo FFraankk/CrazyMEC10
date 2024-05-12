@@ -1,7 +1,9 @@
 //函数调用区
 #include <EEPROM.h>           //调用<EEPROM.h>库
+//#include <SoftwareSerial.h>
 
 //定义变量区
+//SoftwareSerial bluetoothSerial(0, 1); // RX, TX
 #define DWQ_NUM     5               //宏定义电位器数量
 #define ADC_MIN_ADDR   0     //握紧时采集电位器值起始地址
 #define ADC_MAX_ADDR   30    //张手时采集电位器值起始地址
@@ -24,27 +26,26 @@ float pos_p[DWQ_NUM] = {1,1,1,1,1};                 //放大倍数
     len 数据长度
     mydat 数据buf
 */
-void eepromRead(u32 addr, u8 len, u8 *mydat){
+/*void eepromRead(u32 addr, u8 len, u8 *mydat){
     for(u8 i = 0; i < len; i++) {//求取旋钮平均值，存储到EEPROM
         mydat[i] = EEPROM.read(addr+i);
     }        
-}
-
+}*/
 /*
     读写eeprom数据
     addr 地址
     len 数据长度
     mydat 数据buf
 */
-void eepromWrite(u32 addr, u8 len, u8 *mydat){
+/*void eepromWrite(u32 addr, u8 len, u8 *mydat){
     for(u8 i = 0; i < len; i++) {//求取旋钮平均值，存储到EEPROM
         EEPROM.write(addr+i, mydat[i]);
     }        
 }//死亡不掉落
-
+*/
 void read_DWQ() {
     static u32 knob_value;
-    static int16_t ax_t[5],ay_t[5],az_t[5];
+    //static int16_t ax_t[5],ay_t[5],az_t[5];
     for(int i=0;i<5;i++) {
         knob_value = 0;
         for(int j=0;j<10;j++) {
@@ -58,8 +59,8 @@ void read_DWQ() {
 
 
 void setup() {
-    eepromRead(ADC_MIN_ADDR, sizeof(ADC_MIN), (u8 *)ADC_MIN);//读取存储电位器最小值
-    eepromRead(ADC_MAX_ADDR, sizeof(ADC_MAX), (u8 *)ADC_MAX);//读取存储电位器最大值 
+    //eepromRead(ADC_MIN_ADDR, sizeof(ADC_MIN), (u8 *)ADC_MIN);//读取存储电位器最小值
+    //eepromRead(ADC_MAX_ADDR, sizeof(ADC_MAX), (u8 *)ADC_MAX);//读取存储电位器最大值 
     for(int i=0;i<DWQ_NUM;i++) {
       ADC_MID[i] = (ADC_MIN[i] + ADC_MAX[i])/2;
       pos_p[i] = JXB_PWM_RANGE/abs(ADC_MIN[i] - ADC_MAX[i]);//放大倍数 
@@ -69,12 +70,12 @@ void setup() {
 
 void loop() {
   read_DWQ();
-  if(pos[0]<ADC_MID[0] && pos[1]<ADC_MID[1] && pos[2]<ADC_MID[2] && pos[3]<ADC_MID[3] && pos[4]<ADC_MID[4]){
+  if(pos[1]>600 && pos[2]>600 && pos[3]<600){
     //进入张手模式，yyk负责
     Serial.println("ax=,ay=,az=");
     
     }
-  else if(pos[0]<ADC_MID[0] && pos[1]<ADC_MID[1] && pos[2]<ADC_MID[2] && pos[3]<ADC_MID[3] && pos[4]<ADC_MID[4]){
+  else if(pos[1]<600 && pos[2]<600 && pos[3]>600){
     //握拳模式
     Serial.println("握拳模式");
     dwq_output[0] = 1;
@@ -83,16 +84,16 @@ void loop() {
     dwq_output[3] = 1;
     dwq_output[4] = 1;
     }
-  else if(pos[0]>ADC_MID[0] && pos[1]<ADC_MID[1] && pos[2]<ADC_MID[2] && pos[3]<ADC_MID[3] && pos[4]<ADC_MID[4]){
+  else if(pos[1]>600 && pos[2]>600 && pos[3]>600){
     //抬起拇指
-    Serial.println("抬起拇指");
+    Serial.println("抬起食指和中指");
     dwq_output[0] = 2;
     dwq_output[1] = 1;
     dwq_output[2] = 1;
     dwq_output[3] = 1;
     dwq_output[4] = 1;
     }
-  else if(pos[0]<ADC_MID[0] && pos[1]>ADC_MID[1] && pos[2]<ADC_MID[2] && pos[3]<ADC_MID[3] && pos[4]<ADC_MID[4]){
+  else if(pos[1]>600 && pos[2]<600 && pos[3]>600){
     //抬起食指
     Serial.println("抬起食指");
     dwq_output[0] = 1;
@@ -101,7 +102,7 @@ void loop() {
     dwq_output[3] = 1;
     dwq_output[4] = 1;
     }
-  else if(pos[0]<ADC_MID[0] && pos[1]<ADC_MID[1] && pos[2]>ADC_MID[2] && pos[3]<ADC_MID[3] && pos[4]<ADC_MID[4]){
+  else if(pos[1]<600 && pos[2]>600 && pos[3]>600){
     //抬起中指
     Serial.println("抬起中指");
     dwq_output[0] = 1;
@@ -112,5 +113,6 @@ void loop() {
     }
    else{
     Serial.println("其他情况");
+    //Serial.println(pos[0]);Serial.println(pos[1]);Serial.println(pos[2]);Serial.println(pos[3]);Serial.println(pos[4]);
     }
 }

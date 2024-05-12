@@ -97,7 +97,7 @@ void setup(){
 void loop(){ 
     loop_nled();        //led灯闪烁函数
     loop_key_j();       //校验函数
-    loop_Yhand_R();        //旋钮控制
+//    loop_Yhand_R();        //旋钮控制
 }
 
 

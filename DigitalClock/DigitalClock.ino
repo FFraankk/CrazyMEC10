@@ -22,7 +22,7 @@ byte BCD[10][4] ={
 }; //BCD code
 
 void setup() 
-{
+{d:\学习\XJTLU-Y2\MEC104\Arduino\open project\CrazyMEC10\OpenProject\手套代码\KalmanFilter\KalmanFilter.ino
   // put your setup code here, to run once:
   for(int a = 0; a < 4; a++){
   pinMode(inputs_ones[a],OUTPUT);  

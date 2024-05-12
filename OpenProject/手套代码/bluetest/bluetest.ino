@@ -1,7 +1,7 @@
 #include <SoftwareSerial.h>
 // Pin10接HC05的TXD
 // Pin1接HC05的RXD
-SoftwareSerial BT(A4, A5);
+SoftwareSerial BT(1,0);
 char val;
 
 void setup() {
@@ -20,12 +20,11 @@ void loop() {
 //    val = BT.read();
 //    Serial.print(val);
 //  }
-BT.println("鲍逸君好帅");
-delay(100);
-BT.println("范訸然好帅");
-delay(100);
-BT.println("姚亦珂好帅");
-delay(100);
+Serial.println("鲍逸君好帅");
 
-
+delay(100);
+Serial.println("范訸然好帅");
+delay(100);
+Serial.println("姚亦珂好帅");
+delay(100);
 }
